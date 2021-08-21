@@ -13,6 +13,7 @@ go get golang.org/x/sys
 go get github.com/swaggo/echo-swagger
 go get github.com/swaggo/swag
 go get github.com/swaggo/swag/cmd/swag
+go get github.com/alecthomas/template
 
 go get github.com/go-playground/universal-translator
 go get github.com/go-playground/validator
@@ -27,6 +28,7 @@ go mod download
 
 ```sh
 swag init
+swag init --parseDependency true
 ```
 
 ## Run Docker Compose

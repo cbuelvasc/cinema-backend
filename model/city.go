@@ -1,9 +1,10 @@
 package model
 
 import (
+	"time"
+
 	mongopagination "github.com/gobeam/mongo-go-pagination"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type City struct {
@@ -14,7 +15,7 @@ type City struct {
 type CityInput struct {
 	Name      string    `json:"name,omitempty" xml:"name,omitempty" bson:"name" validate:"required"`
 	StateId   string    `json:"stateId,omitempty" xml:"stateId,omitempty" bson:"stateId" validate:"required"`
-	Cinemas   []string  `json:"cinemas,omitempty" xml:"cinemas,omitempty" bson:"cinemas" validate:"required"`
+	Cinemas   []string  `json:"cinemas,omitempty" xml:"cinemas,omitempty" bson:"cinemas"`
 	CreatedAt time.Time `json:"created_at,omitempty" xml:"created_at,omitempty" bson:"created_at"`
 	UpdatedAt time.Time `json:"updated_at,omitempty" xml:"updated_at,omitempty" bson:"updated_at"`
 }

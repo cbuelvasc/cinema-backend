@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+
 	"github.com/cbuelvasc/cinema-backend/exception"
 	"github.com/cbuelvasc/cinema-backend/model"
 	paginate "github.com/gobeam/mongo-go-pagination"
@@ -12,7 +13,7 @@ import (
 )
 
 type CityRepository interface {
-	GetAllCities(ctx context.Context, page int64, limit int64) (*model.PagedCity, error)
+	GetAllCities(ctx context.Context, page int64, limit int64, stateId string) (*model.PagedCity, error)
 	GetCityById(ctx context.Context, id string) (*model.City, error)
 	SaveCity(ctx context.Context, city *model.City) (*model.City, error)
 	UpdateCity(ctx context.Context, id string, city *model.City) (*model.City, error)
@@ -27,11 +28,10 @@ func NewCityRepository(Connection *mongo.Database) CityRepository {
 	return &cityRepositoryImpl{Connection: Connection}
 }
 
-func (cityRepository *cityRepositoryImpl) GetAllCities(ctx context.Context, page int64, limit int64) (*model.PagedCity, error) {
+func (cityRepository *cityRepositoryImpl) GetAllCities(ctx context.Context, page int64, limit int64, stateId string) (*model.PagedCity, error) {
 	var cities []model.City
 
-	filter := bson.M{
-	}
+	filter := bson.M{}
 
 	collection := cityRepository.Connection.Collection("cities")
 
@@ -46,6 +46,10 @@ func (cityRepository *cityRepositoryImpl) GetAllCities(ctx context.Context, page
 	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Select(projection).Filter(filter).Decode(&cities).Find()
 	if err != nil {
 		return nil, err
+	}
+
+	if cities == nil {
+		return nil, exception.NotFoundRequestException("Cities not found")
 	}
 
 	return &model.PagedCity{

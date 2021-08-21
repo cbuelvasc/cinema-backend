@@ -1,7 +1,7 @@
 package enums
 
 const (
-	BasePath = "/api/yellow/v1"
+	BasePath = "/api/cinema/v1"
 
 	SignIn = "/signin"
 	SignUp = "/signup"
@@ -23,11 +23,17 @@ const (
 	UpdateCountryById = "/countries/:id"
 	DeleteCountryById = "/countries/:id"
 
-	GetStates      = "/states"
+	GetStates       = "/states"
 	CreateState     = "/states"
 	GetStateById    = "/states/:id"
 	UpdateStateById = "/states/:id"
 	DeleteStateById = "/states/:id"
+
+	GetCities      = "/cities"
+	CreateCity     = "/cities"
+	GetCityById    = "/cities/:id"
+	UpdateCityById = "/cities/:id"
+	DeleteCityById = "/cities/:id"
 
 	GetTweets       = "/tweets"
 	CreateTweets    = "/tweets"

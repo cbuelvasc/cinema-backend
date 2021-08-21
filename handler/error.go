@@ -44,7 +44,7 @@ func ErrorHandler(err error, c echo.Context) {
 
 	// Send response
 	if !c.Response().Committed {
-		if c.Request().Method == http.MethodHead { // Issue #608
+		if c.Request().Method == http.MethodHead {
 			err = c.NoContent(code)
 		} else {
 			util.Negotiate(c, code, message)

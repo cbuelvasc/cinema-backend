@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+
 	"github.com/cbuelvasc/cinema-backend/exception"
 	"github.com/cbuelvasc/cinema-backend/model"
 	paginate "github.com/gobeam/mongo-go-pagination"
@@ -45,6 +46,10 @@ func (countryRepository *countryRepositoryImpl) GetAllCountries(ctx context.Cont
 	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Select(projection).Filter(filter).Decode(&countries).Find()
 	if err != nil {
 		return nil, err
+	}
+
+	if countries == nil {
+		return nil, exception.NotFoundRequestException("Countries not found")
 	}
 
 	return &model.PagedCountry{

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+
 	"github.com/cbuelvasc/cinema-backend/exception"
 	"github.com/cbuelvasc/cinema-backend/model"
 	paginate "github.com/gobeam/mongo-go-pagination"
@@ -12,7 +13,7 @@ import (
 )
 
 type StateRepository interface {
-	GetAllStates(ctx context.Context, page int64, limit int64) (*model.PagedState, error)
+	GetAllStates(ctx context.Context, page int64, limit int64, countryId string) (*model.PagedState, error)
 	GetStateById(ctx context.Context, id string) (*model.State, error)
 	SaveState(ctx context.Context, state *model.State) (*model.State, error)
 	UpdateState(ctx context.Context, id string, state *model.State) (*model.State, error)
@@ -27,13 +28,17 @@ func NewStateRepository(Connection *mongo.Database) StateRepository {
 	return &stateRepositoryImpl{Connection: Connection}
 }
 
-func (stateRepository *stateRepositoryImpl) GetAllStates(ctx context.Context, page int64, limit int64) (*model.PagedState, error) {
+func (stateRepository *stateRepositoryImpl) GetAllStates(ctx context.Context, page int64, limit int64, countryId string) (*model.PagedState, error) {
 	var states []model.State
 
-	filter := bson.M{}
+	var filter = bson.M{}
+	if len(countryId) > 0 {
+		filter = bson.M{
+			"countryId": countryId,
+		}
+	}
 
 	collection := stateRepository.Connection.Collection("states")
-
 	projection := bson.D{
 		{"id", 1},
 		{"name", 1},
@@ -45,6 +50,10 @@ func (stateRepository *stateRepositoryImpl) GetAllStates(ctx context.Context, pa
 	paginatedData, err := paginate.New(collection).Context(ctx).Limit(limit).Page(page).Select(projection).Filter(filter).Decode(&states).Find()
 	if err != nil {
 		return nil, err
+	}
+
+	if states == nil {
+		return nil, exception.NotFoundRequestException("States not found")
 	}
 
 	return &model.PagedState{

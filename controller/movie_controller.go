@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/cbuelvasc/cinema-backend/model"
 	"github.com/cbuelvasc/cinema-backend/repository"
 	"github.com/cbuelvasc/cinema-backend/util"
 	"github.com/labstack/echo/v4"
-	"net/http"
-	"strconv"
 )
 
 type MovieControllerInterface interface {
@@ -30,14 +31,13 @@ func NewMovieController(movieRepository repository.MovieRepository, userReposito
 
 // GetAllMovie godoc
 // @Summary Get all movies
-// @Description Get all movie items
+// @Description Get all movies items
 // @Tags movies
 // @Accept json,xml
 // @Produce json
 // @Param mediaType query string false "mediaType" Enums(xml, json)
 // @Param page query int false "page" minimum(1)
 // @Param limit query int false "size" minimum(1)
-// @Param movieId query string true "movieId"
 // @Success 200 {array} model.Movie
 // @Failure 500 {object} handler.APIError
 // @Router /movies [get]
@@ -111,19 +111,19 @@ func (movieController *MovieController) SaveMovie(c echo.Context) error {
 }
 
 // UpdateMovie godoc
-// @Summary Update a user
-// @Description Update a user item
-// @Tags users
+// @Summary Update a movie
+// @Description Update a movie item
+// @Tags movies
 // @Accept json,xml
 // @Produce json
 // @Param mediaType query string false "mediaType" Enums(json, xml)
 // @Param id path string true "Movie ID"
-// @Param user body model.MovieInput true "Movie Info"
+// @Param movie body model.MovieInput true "Movie Info"
 // @Success 200 {object} model.Movie
 // @Failure 400 {object} handler.APIError
 // @Failure 404 {object} handler.APIError
 // @Failure 500 {object} handler.APIError
-// @Router /users/{id} [put]
+// @Router /movies/{id} [put]
 // @Security ApiKeyAuth
 func (movieController *MovieController) UpdateMovie(c echo.Context) error {
 	id := c.Param("id")
@@ -134,11 +134,11 @@ func (movieController *MovieController) UpdateMovie(c echo.Context) error {
 		return err
 	}
 
-	user, err := movieController.movieRepository.UpdateMovie(c.Request().Context(), id, &model.Movie{MovieInput: payload})
+	movie, err := movieController.movieRepository.UpdateMovie(c.Request().Context(), id, &model.Movie{MovieInput: payload})
 	if err != nil {
 		return err
 	}
-	return util.Negotiate(c, http.StatusOK, user)
+	return util.Negotiate(c, http.StatusOK, movie)
 }
 
 // DeleteMovie godoc

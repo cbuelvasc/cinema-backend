@@ -11,8 +11,8 @@ var whiteListPaths = []string{
 	"/favicon.ico",
 	"/api",
 	"/api/*",
-	"/api/yellow/v1/signin",
-	"/api/yellow/v1/signup",
+	"/api/cinema/v1/signin",
+	"/api/cinema/v1/signup",
 }
 
 // change default error message

@@ -1,13 +1,14 @@
 package controller
 
 import (
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/cbuelvasc/cinema-backend/model"
 	"github.com/cbuelvasc/cinema-backend/repository"
 	"github.com/cbuelvasc/cinema-backend/util"
 	"github.com/labstack/echo/v4"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 type CountryControllerInterface interface {
@@ -112,35 +113,35 @@ func (countryController *CountryController) SaveCountry(c echo.Context) error {
 }
 
 // UpdateCountry godoc
-// @Summary Update a user
-// @Description Update a user item
-// @Tags users
+// @Summary Update a country
+// @Description Update a country item
+// @Tags countries
 // @Accept json,xml
 // @Produce json
 // @Param mediaType query string false "mediaType" Enums(json, xml)
 // @Param id path string true "Country ID"
-// @Param user body model.CountryInput true "Country Info"
+// @Param country body model.CountryInput true "Country Info"
 // @Success 200 {object} model.Country
 // @Failure 400 {object} handler.APIError
 // @Failure 404 {object} handler.APIError
 // @Failure 500 {object} handler.APIError
-// @Router /users/{id} [put]
+// @Router /countries/{id} [put]
 // @Security ApiKeyAuth
 func (countryController *CountryController) UpdateCountry(c echo.Context) error {
 	id := c.Param("id")
 
 	payload := new(model.CountryInput)
 
-	payload.UpdatedAt = time.Now()
 	if err := util.BindAndValidate(c, payload); err != nil {
 		return err
 	}
 
-	user, err := countryController.countryRepository.UpdateCountry(c.Request().Context(), id, &model.Country{CountryInput: payload})
+	payload.UpdatedAt = time.Now()
+	country, err := countryController.countryRepository.UpdateCountry(c.Request().Context(), id, &model.Country{CountryInput: payload})
 	if err != nil {
 		return err
 	}
-	return util.Negotiate(c, http.StatusOK, user)
+	return util.Negotiate(c, http.StatusOK, country)
 }
 
 // DeleteCountry godoc
